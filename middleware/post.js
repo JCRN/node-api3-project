@@ -13,4 +13,25 @@ function validatePost() {
   }
 }
 
-module.exports = { validatePost }
+function validatePostID() {
+  return (req, res, next) => {
+    const { id } = req.params
+    posts
+      .getById(id)
+      .then((post) => {
+        if (post) {
+          req.post = post
+
+          next()
+        } else {
+          res.status(400).json({ message: 'Invalid post ID' })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        res.status(500).json({ errorMessage: 'Error validating post' })
+      })
+  }
+}
+
+module.exports = { validatePost, validatePost }
