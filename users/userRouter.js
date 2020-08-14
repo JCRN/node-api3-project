@@ -1,6 +1,9 @@
 const express = require('express')
 const users = require('./userDb')
+const posts = require('../posts/postDb')
+
 const { validateUser, validateUserID } = require('../middleware/user')
+const { validatePost } = require('../middleware/post')
 
 const router = express.Router()
 
@@ -20,8 +23,21 @@ router.post('/', validateUser(), (req, res) => {
     })
 })
 
-router.post('/:id/posts', validateUserID(), (req, res) => {
-  // do your magic!
+router.post('/:id/posts', validateUserID(), validatePost(), (req, res) => {
+  const { id } = req.user
+  const post = req.body.text
+  posts
+    .insert({ user_id: id, text: post })
+    .then(() => {
+      res.status(200).json({ message: `${post} has been posted` })
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json({
+        errorMessage:
+          'There was an error while saving the post with the specified user ID to the database',
+      })
+    })
 })
 
 router.get('/', (req, res) => {

@@ -34,4 +34,4 @@ function validatePostID() {
   }
 }
 
-module.exports = { validatePost, validatePost }
+module.exports = { validatePost, validatePostID }
